@@ -41,4 +41,4 @@ update_local_ptr
 #touch $v2dat_dir/rules/force-cn.txt
 # force-cn 是强制本地解析域名，force-nocn 是强制非本地解析域名
 
-echo "localhost 127.0.0.1" >> $v2dat_dir/rules/hosts.txt
+#echo "localhost 127.0.0.1" >> $v2dat_dir/rules/hosts.txt
