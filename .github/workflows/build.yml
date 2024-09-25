@@ -28,6 +28,7 @@ jobs:
           tag_name: ${{ env.TAG_NAME }}
           draft: false
           prerelease: false
+          make_latest: true
           files: |
             ./rules/*.txt
         env:
