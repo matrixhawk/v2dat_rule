@@ -17,6 +17,13 @@ jobs:
         run: ./getrule.sh
       - name: ls
         run: ls -al ./rules/
+      - name: Delete old releases
+        uses: Nats-ji/delete-old-releases@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          keep-count: 0
+          keep-old-minor-releases: false
+          remove-tags: true
       - name: Set variables
         run: |
           echo "RELEASE_NAME=Released on $(date +%Y%m%d%H%M)" >> $GITHUB_ENV
@@ -25,7 +32,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           name: ${{ env.RELEASE_NAME }}
-          tag_name: ${{ env.TAG_NAME }}
+          tag_name: latest
           draft: false
           prerelease: false
           make_latest: true
