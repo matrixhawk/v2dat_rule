@@ -32,7 +32,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           name: ${{ env.RELEASE_NAME }}
-          tag_name: latest
+          tag_name: ${{ env.TAG_NAME }}
           draft: false
           prerelease: false
           make_latest: true
