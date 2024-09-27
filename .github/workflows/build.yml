@@ -27,7 +27,7 @@ jobs:
       - name: Set variables
         run: |
           echo "RELEASE_NAME=Released on $(date +%Y%m%d%H%M)" >> $GITHUB_ENV
-          echo "TAG_NAME=latest" >> $GITHUB_ENV
+          echo "TAG_NAME=100" >> $GITHUB_ENV
       - name: Release and upload assets
         uses: softprops/action-gh-release@v2
         with:
