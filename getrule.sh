@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e  # 若任一命令失败则退出
+set -e  # 任何命令失败则退出
 
 TMPDIR=$(mktemp -d)
 trap 'rm -rf "$TMPDIR"' EXIT  # 脚本退出时清除临时目录
@@ -20,37 +20,49 @@ v2dat_dump() {
     chmod +x "$v2dat_dir/v2dat"
     
     # 清除旧的规则文件
-    rm -f "$v2dat_dir/rules/geo"*.txt "$v2dat_dir/rules/geosite"*.txt
+    rm -f "$v2dat_dir/rules/"*.txt
 
-    # 原始解包（可保留或根据实际需求移除）
+    # 分别生成所需的规则文件
     "$v2dat_dir/v2dat" unpack geoip -o "$v2dat_dir/rules/" -f cn "$v2dat_dir/geoip.dat"
-    "$v2dat_dir/v2dat" unpack geosite -o "$v2dat_dir/rules/" -f apple -f cn -f 'geolocation-!cn' "$v2dat_dir/geosite.dat"
-
-    # 增加以下各项解包
-
-    # 解包 geoip_cn.txt（提取 "cn" 标签）
-    "$v2dat_dir/v2dat" unpack geoip -o "$v2dat_dir/rules/" -f cn "$v2dat_dir/geoip.dat"
-    # 解包 geoip_private.txt（提取 "private" 标签）
     "$v2dat_dir/v2dat" unpack geoip -o "$v2dat_dir/rules/" -f private "$v2dat_dir/geoip.dat"
-    
-    # 解包 geosite_category-ads-all.txt（提取 "category-ads-all" 标签）
     "$v2dat_dir/v2dat" unpack geosite -o "$v2dat_dir/rules/" -f category-ads-all "$v2dat_dir/geosite.dat"
-    # 解包 geosite_geolocation-!cn.txt（提取 "geolocation-!cn" 标签）
     "$v2dat_dir/v2dat" unpack geosite -o "$v2dat_dir/rules/" -f 'geolocation-!cn' "$v2dat_dir/geosite.dat"
-    # 解包 geosite_gfw.txt（提取 "gfw" 标签）
     "$v2dat_dir/v2dat" unpack geosite -o "$v2dat_dir/rules/" -f gfw "$v2dat_dir/geosite.dat"
-    # 解包 geosite_cn.txt（提取 "cn" 标签）
     "$v2dat_dir/v2dat" unpack geosite -o "$v2dat_dir/rules/" -f cn "$v2dat_dir/geosite.dat"
 
-    # 重命名生成的文件为期望的文件名
-    mv "$v2dat_dir/rules/geoip.dat_cn.txt" "$v2dat_dir/rules/geoip_cn.txt"
-    mv "$v2dat_dir/rules/geoip.dat_private.txt" "$v2dat_dir/rules/geoip_private.txt"
-    mv "$v2dat_dir/rules/geosite.dat_category-ads-all.txt" "$v2dat_dir/rules/geosite_category-ads-all.txt"
-    mv "$v2dat_dir/rules/geosite.dat_geolocation-!cn.txt" "$v2dat_dir/rules/geosite_geolocation-!cn.txt"
-    mv "$v2dat_dir/rules/geosite.dat_gfw.txt" "$v2dat_dir/rules/geosite_gfw.txt"
-    mv "$v2dat_dir/rules/geosite.dat_cn.txt" "$v2dat_dir/rules/geosite_cn.txt"
+    # 根据 v2dat 工具的输出格式（默认 <输入文件名>_<filter>.txt），做重命名
+    if [ -f "$v2dat_dir/rules/geoip.dat_cn.txt" ]; then
+       mv "$v2dat_dir/rules/geoip.dat_cn.txt" "$v2dat_dir/rules/geoip_cn.txt"
+    else
+       echo "未找到 geoip.dat_cn.txt"
+    fi
+    if [ -f "$v2dat_dir/rules/geoip.dat_private.txt" ]; then
+       mv "$v2dat_dir/rules/geoip.dat_private.txt" "$v2dat_dir/rules/geoip_private.txt"
+    else
+       echo "未找到 geoip.dat_private.txt"
+    fi
+    if [ -f "$v2dat_dir/rules/geosite.dat_category-ads-all.txt" ]; then
+       mv "$v2dat_dir/rules/geosite.dat_category-ads-all.txt" "$v2dat_dir/rules/geosite_category-ads-all.txt"
+    else
+       echo "未找到 geosite.dat_category-ads-all.txt"
+    fi
+    if [ -f "$v2dat_dir/rules/geosite.dat_geolocation-!cn.txt" ]; then
+       mv "$v2dat_dir/rules/geosite.dat_geolocation-!cn.txt" "$v2dat_dir/rules/geosite_geolocation-!cn.txt"
+    else
+       echo "未找到 geosite.dat_geolocation-!cn.txt"
+    fi
+    if [ -f "$v2dat_dir/rules/geosite.dat_gfw.txt" ]; then
+       mv "$v2dat_dir/rules/geosite.dat_gfw.txt" "$v2dat_dir/rules/geosite_gfw.txt"
+    else
+       echo "未找到 geosite.dat_gfw.txt"
+    fi
+    if [ -f "$v2dat_dir/rules/geosite.dat_cn.txt" ]; then
+       mv "$v2dat_dir/rules/geosite.dat_cn.txt" "$v2dat_dir/rules/geosite_cn.txt"
+    else
+       echo "未找到 geosite.dat_cn.txt"
+    fi
     
-    # 解包完毕后删除 v2dat 工具，避免残留
+    # 删除 v2dat 工具
     rm -rf "$v2dat_dir/v2dat"
 }
 
